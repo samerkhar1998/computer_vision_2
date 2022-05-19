@@ -52,6 +52,7 @@ def computeEpilines(points, whichImage, F, lines=None):
         lines = lines.T
     return lines
 
+
 def convert2Dto3D(points1, points2):
     homo_pts1 = []
     homo_pts2 = []
@@ -68,6 +69,7 @@ def convert2Dto3D(points1, points2):
     homo_pts2 = np.int32(homo_pts2)
     return homo_pts1, homo_pts2
 
+
 def AlgebraicDistance(F, points1, points2):
     number_of_points = np.size(points2) / 3
     sum = 0
@@ -75,6 +77,7 @@ def AlgebraicDistance(F, points1, points2):
         sum += abs(np.matmul(np.matmul(point2, F), point1.T))
     sum = sum / number_of_points
     return sum
+
 
 def EpipolarDistance(F, points1, points2):
     number_of_points = np.size(points1) / 3
@@ -92,6 +95,7 @@ def EpipolarDistance(F, points1, points2):
     sum = sum / number_of_points
     return sum
 
+
 def drawLines(img1, img2, lines1, lines2, pts1, pts2):
     r = img1.shape[0]
     c = img1.shape[1]
@@ -108,7 +112,7 @@ def drawLines(img1, img2, lines1, lines2, pts1, pts2):
     return img1, img2
 
 
-def runScript():
+def runScript(pts1, pts2):
     F, mask = fundamentalMatrix(pts1, pts2, 7)
     homo_pts1, homo_pts2 = convert2Dto3D(pts1, pts2)
     lines1 = computeEpilines(homo_pts2.T, 2, F)
@@ -126,17 +130,34 @@ def runScript():
 
 
 if __name__ == "__main__":
-    path1 = "Q1/location_2_frame_001.jpg"
+    path1 = "Q1/location_1_frame_001.jpg"
     img1 = cv2.cvtColor(cv2.imread(path1), cv2.COLOR_BGR2RGB)
-    path2 = "Q1/location_2_frame_002.jpg"
+    path2 = "Q1/location_1_frame_002.jpg"
     img2 = cv2.cvtColor(cv2.imread(path2), cv2.COLOR_BGR2RGB)
 
-    getImagePts(img1, img2, "loc2_001", "loc2_002", 10)
-    pts1 = np.load("loc2_001.npy")
-    pts2 = np.load("loc2_002.npy")
+    # getImagePts(img1, img2, "loc2_001", "loc2_002", 10)
+    pts1 = np.load("loc1_001.npy")
+    pts2 = np.load("loc1_002.npy")
     pts1 = [[pt[0], pt[1]] for pt in pts1]
     pts2 = [[pt[0], pt[1]] for pt in pts2]
     pts1 = np.int32(pts1)
     pts2 = np.int32(pts2)
 
-    runScript()
+    runScript(pts1, pts2)
+
+    path3 = "Q1/location_2_frame_001.jpg"
+    img3 = cv2.cvtColor(cv2.imread(path1), cv2.COLOR_BGR2RGB)
+    path4 = "Q1/location_2_frame_002.jpg"
+    img4 = cv2.cvtColor(cv2.imread(path2), cv2.COLOR_BGR2RGB)
+
+    # getImagePts(img1, img2, "loc2_001", "loc2_002", 10)
+    pts3 = np.load("loc2_001.npy")
+    pts4 = np.load("loc2_002.npy")
+    pts3 = [[pt[0], pt[1]] for pt in pts3]
+    pts4 = [[pt[0], pt[1]] for pt in pts4]
+    pts3 = np.int32(pts3)
+    pts4 = np.int32(pts4)
+
+    runScript(pts3, pts4)
+
+
