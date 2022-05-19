@@ -112,7 +112,7 @@ def drawLines(img1, img2, lines1, lines2, pts1, pts2):
     return img1, img2
 
 
-def runScript(pts1, pts2):
+def runScript(pts1, pts2, img1, img2):
     F, mask = fundamentalMatrix(pts1, pts2, 7)
     homo_pts1, homo_pts2 = convert2Dto3D(pts1, pts2)
     lines1 = computeEpilines(homo_pts2.T, 2, F)
@@ -143,12 +143,12 @@ if __name__ == "__main__":
     pts1 = np.int32(pts1)
     pts2 = np.int32(pts2)
 
-    runScript(pts1, pts2)
+    runScript(pts1, pts2, img1, img2)
 
     path3 = "Q1/location_2_frame_001.jpg"
-    img3 = cv2.cvtColor(cv2.imread(path1), cv2.COLOR_BGR2RGB)
+    img3 = cv2.cvtColor(cv2.imread(path3), cv2.COLOR_BGR2RGB)
     path4 = "Q1/location_2_frame_002.jpg"
-    img4 = cv2.cvtColor(cv2.imread(path2), cv2.COLOR_BGR2RGB)
+    img4 = cv2.cvtColor(cv2.imread(path4), cv2.COLOR_BGR2RGB)
 
     # getImagePts(img3, img4, "loc2_001", "loc2_002", 10)
     pts3 = np.load("loc2_001.npy")
@@ -158,6 +158,6 @@ if __name__ == "__main__":
     pts3 = np.int32(pts3)
     pts4 = np.int32(pts4)
 
-    runScript(pts3, pts4)
+    runScript(pts3, pts4, img3, img4)
 
 
