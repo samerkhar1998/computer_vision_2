@@ -135,7 +135,7 @@ if __name__ == "__main__":
     path2 = "Q1/location_1_frame_002.jpg"
     img2 = cv2.cvtColor(cv2.imread(path2), cv2.COLOR_BGR2RGB)
 
-    # getImagePts(img1, img2, "loc2_001", "loc2_002", 10)
+    # getImagePts(img1, img2, "loc1_001", "loc1_002", 10)
     pts1 = np.load("loc1_001.npy")
     pts2 = np.load("loc1_002.npy")
     pts1 = [[pt[0], pt[1]] for pt in pts1]
@@ -150,7 +150,7 @@ if __name__ == "__main__":
     path4 = "Q1/location_2_frame_002.jpg"
     img4 = cv2.cvtColor(cv2.imread(path2), cv2.COLOR_BGR2RGB)
 
-    # getImagePts(img1, img2, "loc2_001", "loc2_002", 10)
+    # getImagePts(img3, img4, "loc2_001", "loc2_002", 10)
     pts3 = np.load("loc2_001.npy")
     pts4 = np.load("loc2_002.npy")
     pts3 = [[pt[0], pt[1]] for pt in pts3]
