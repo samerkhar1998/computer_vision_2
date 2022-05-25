@@ -70,17 +70,40 @@ def convert2Dto3D(points1, points2):
     return homo_pts1, homo_pts2
 
 
-def AlgebraicDistance(F, points1, points2):
-    number_of_points = np.size(points2) / 3
-    sum = 0
-    for point1, point2 in zip(points1, points2):
-        sum += abs(np.matmul(np.matmul(point2, F), point1.T))
-    sum = sum / number_of_points
-    return sum
+def SED(pts1, pts2, F):
+    diff = []
+    for i in range(10):
+        xtag = pts2[i].reshape(3, 1)
+        xtag = np.transpose(xtag)
+        x = pts1[i].reshape(3, 1)
+        L = np.matmul(F, x)
+        XF = np.matmul(xtag, F)
+        XFx = np.matmul(XF, x)
+        d = XFx / (math.sqrt(pow(L[0], 2) + pow(L[1], 2)))
+        d = abs(d)
+        diff = np.append(diff, d)
+    avg = np.average(diff)
+    return diff, avg
 
 
 def EpipolarDistance(F, points1, points2):
-    number_of_points = np.size(points1) / 3
+    # diff = []
+    # for i in range(10):
+    #     xtag = points2[i].reshape(3, 1)
+    #     xtag = np.transpose(xtag)
+    #     x = points1[i].reshape(3, 1)
+    #     L = np.matmul(F, x)
+    #     XF = np.matmul(xtag, F)
+    #     XFx = np.matmul(XF, x)
+    #     d = XFx / (math.sqrt(pow(L[0], 2) + pow(L[1], 2)))
+    #     d = abs(d)
+    #     diff = np.append(diff, d)
+    # avg = np.average(diff)
+    # return diff, avg
+    #
+
+
+    number_of_points = np.size(points1)/3
     sum = 0
     for point1, point2 in zip(points1, points2):
         l2 = np.matmul(F, point1.T)
@@ -103,10 +126,10 @@ def drawLines(img1, img2, lines1, lines2, pts1, pts2):
         color = tuple(np.random.randint(0, 255, 3).tolist())
         x0, y0 = map(int, [0, -r1[2] / r1[1]])
         x1, y1 = map(int, [c, -(r1[2] + r1[0] * c) / r1[1]])
-        img1 = cv2.line(img1, (x0, y0), (x1, y1), color, 3)
+        img1 = cv2.line(img1, (x0, y0), (x1, y1), color, 2)
         x0, y0 = map(int, [0, -r2[2] / r2[1]])
         x1, y1 = map(int, [c, -(r2[2] + r2[0] * c) / r2[1]])
-        img2 = cv2.line(img2, (x0, y0), (x1, y1), color, 3)
+        img2 = cv2.line(img2, (x0, y0), (x1, y1), color, 2)
         img1 = cv2.circle(img1, tuple(pt1), 5, color, -1)
         img2 = cv2.circle(img2, tuple(pt2), 5, color, -1)
     return img1, img2
@@ -117,14 +140,14 @@ def runScript(pts1, pts2, img1, img2):
     homo_pts1, homo_pts2 = convert2Dto3D(pts1, pts2)
     lines1 = computeEpilines(homo_pts2.T, 2, F)
     lines2 = computeEpilines(homo_pts1.T, 1, F)
-    alg = AlgebraicDistance(F, homo_pts1, homo_pts2)
     img3, img4 = drawLines(img1, img2, lines1, lines2, pts1, pts2)
-    epi = EpipolarDistance(F, homo_pts1, homo_pts2)
+    # epi = EpipolarDistance(F, homo_pts1, homo_pts2)
+    diff, epi = SED(homo_pts1, homo_pts2, F)
 
     plt.subplot(121), plt.imshow(img3)
     plt.title("8 Point algorithm")
     plt.subplot(122), plt.imshow(img4)
-    plt.title("Algebraic distance: " + str(round(alg, 4)) + ' Epipolar distance: ' + str(round(epi, 4)))
+    plt.title("SED:" + str(round(epi, 4)))
 
     plt.show()
 
